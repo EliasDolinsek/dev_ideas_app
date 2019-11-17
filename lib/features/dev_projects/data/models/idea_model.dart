@@ -3,21 +3,22 @@ import 'package:dev_ideas/features/dev_projects/domain/enteties/idea.dart';
 import 'package:meta/meta.dart';
 
 class IdeaModel extends Idea {
-  IdeaModel({@required String id,
-    @required String title,
-    @required String projectName,
-    @required String description,
-    @required List<String> photoURLs,
-    @required String category,
-    @required DevStatus status})
+  IdeaModel(
+      {@required String id,
+      @required String title,
+      @required String projectName,
+      @required String description,
+      @required List<String> photoURLs,
+      @required String category,
+      @required DevStatus status})
       : super(
-      id: id,
-      title: title,
-      projectName: projectName,
-      description: description,
-      photoURLs: photoURLs,
-      category: category,
-      status: status);
+            id: id,
+            title: title,
+            projectName: projectName,
+            description: description,
+            photoURLs: photoURLs,
+            category: category,
+            status: status);
 
   factory IdeaModel.fromJSON(Map<String, dynamic> json) {
     return IdeaModel(
@@ -37,6 +38,7 @@ class IdeaModel extends Idea {
       "projectName": projectName,
       "description": description,
       "photoURLs": photoURLs,
+      "category": category,
       "devStatus": DevStatusHelper.value(status)
     };
   }

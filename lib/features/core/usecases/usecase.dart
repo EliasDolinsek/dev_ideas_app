@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:dev_ideas/features/core/errors/failure.dart';
+import 'package:dev_ideas/features/core/errors/failures.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class Usecase<Type, Params> {

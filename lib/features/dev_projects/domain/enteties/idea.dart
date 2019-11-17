@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 class Idea extends Equatable {
-
   final String id;
   final String title, projectName, description, category;
   final List<String> photoURLs;
@@ -17,5 +16,13 @@ class Idea extends Equatable {
       @required this.photoURLs,
       @required this.category,
       @required this.status})
-      : super([id, title, projectName, description, photoURLs, category, status]);
+      : assert(id != null),
+        assert(title != null),
+        assert(projectName != null),
+        assert(description != null),
+        assert(photoURLs != null),
+        assert(category != null),
+        assert(status != null),
+        super(
+            [id, title, projectName, description, photoURLs, category, status]);
 }

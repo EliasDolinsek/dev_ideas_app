@@ -10,6 +10,7 @@ void main() {
     id: "123",
     title: "Test",
     projectName: "Name",
+    category: "Category",
     description: "Description",
     photoURLs: ["test.com", "test1.com"],
     status: DevStatus.IDEA
@@ -34,7 +35,8 @@ void main() {
       "projectName": "Name",
       "description": "Description",
       "photoURLs": ["test.com", "test1.com"],
-      "devStatus": 0
+      "devStatus": 0,
+      "category":"Category"
     };
 
     expect(result, equals(expectedMap));

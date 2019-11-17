@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:dev_ideas/features/core/errors/failure.dart';
+import 'package:dev_ideas/features/core/errors/failures.dart';
 import 'package:dev_ideas/features/core/usecases/usecase.dart';
 import 'package:dev_ideas/features/dev_projects/domain/enteties/idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/repositories/dev_projects_repository.dart';
