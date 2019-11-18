@@ -5,7 +5,6 @@ import 'package:dev_ideas/features/dev_projects/domain/enteties/dev_status.dart'
 import 'package:dev_ideas/features/dev_projects/domain/enteties/idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/repositories/dev_projects_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 class GetIdeasByFilter extends Usecase<List<Idea>, GetIdeasByFilterParams> {
   final DevProjectsRepository repository;

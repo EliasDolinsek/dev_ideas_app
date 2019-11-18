@@ -12,8 +12,12 @@ class DevProjectsRepositoryDefaultImpl extends DevProjectsRepository {
   DevProjectsRepositoryDefaultImpl({@required this.localDataSource});
 
   @override
-  Future<Either<Failure, List<Idea>>> getAllIdeas() {
-    return null;
+  Future<Either<Failure, List<Idea>>> getAllIdeas() async {
+    try {
+      return Right(await localDataSource.getAllIdeas());
+    } catch (e) {
+      return Left(CacheFailure());
+    }
   }
 
 }
