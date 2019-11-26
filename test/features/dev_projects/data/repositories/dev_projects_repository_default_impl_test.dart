@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:dev_ideas/features/core/errors/exceptions.dart';
-import 'package:dev_ideas/features/core/errors/failures.dart';
+import 'package:dev_ideas/core/errors/exceptions.dart';
+import 'package:dev_ideas/core/errors/failures.dart';
 import 'package:dev_ideas/features/dev_projects/data/models/idea_model.dart';
 import 'package:dev_ideas/features/dev_projects/data/repositories/dev_projects_repository_default_impl.dart';
 import 'package:dev_ideas/features/dev_projects/domain/enteties/dev_status.dart';

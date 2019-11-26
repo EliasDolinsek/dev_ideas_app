@@ -42,4 +42,16 @@ class IdeaModel extends Idea {
       "devStatus": DevStatusHelper.value(status)
     };
   }
+
+  static List<IdeaModel> ideaModelsFromJSON(Map<String, dynamic> json){
+    final List ideasList = json["ideas"];
+    return ideasList.map((ideaJson) => IdeaModel.fromJSON(ideaJson)).toList();
+  }
+
+  static Map<String, dynamic> ideaModelsToJSON(List<IdeaModel> models){
+    final Map<String, dynamic> map = {};
+    List<Map<String, dynamic>> modelsAsList = models.map((m) => m.toJSON()).toList();
+    map["ideas"] = modelsAsList;
+    return map;
+  }
 }

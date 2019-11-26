@@ -5,6 +5,7 @@
       "title": "Test",
       "projectName": "Name",
       "description": "Description",
+      "category": "Category1",
       "photoURLs": [
         "test.com",
         "test1.com"
@@ -16,6 +17,7 @@
       "title": "Test",
       "projectName": "Name",
       "description": "Description",
+      "category": "Category2",
       "photoURLs": [
         "test.com",
         "test1.com"
@@ -27,6 +29,7 @@
       "title": "Test",
       "projectName": "Name",
       "description": "Description",
+      "category": "Category3",
       "photoURLs": [
         "test.com",
         "test1.com"

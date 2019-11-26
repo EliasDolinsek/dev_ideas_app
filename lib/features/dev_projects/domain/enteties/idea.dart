@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 class Idea extends Equatable {
+
   final String id;
   final String title, projectName, description, category;
   final List<String> photoURLs;
