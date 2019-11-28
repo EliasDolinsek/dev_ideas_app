@@ -8,4 +8,10 @@ abstract class DevProjectsRepository extends Equatable {
 
   Future<Either<Failure, List<Idea>>> getAllIdeas();
 
+  Future<Either<Failure, void>> addIdea(Idea idea);
+
+  Future<Either<Failure, void>> removeIdea(String ideaID);
+
+  Future<Either<Failure, void>> updateIdea(String ideaID, Idea update);
+
 }
