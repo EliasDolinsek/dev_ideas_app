@@ -24,9 +24,13 @@ class DevProjectsRepositoryDefaultImpl extends DevProjectsRepository {
   Future<Either<Failure, void>> addIdea(Idea idea) async {
     final ideas = await getAllIdeas();
     return ideas.fold((failure) => Left(failure), (ideasAsList){
-      ideasAsList.add(idea);
-      localDataSource.writeIdeas(ideasAsList);
-      return Right(null);
+      if(_ideaByIdAlreadyExists(ideasAsList, idea)){
+        return Left(IdeaAlreadyExistsFailure());
+      } else {
+        ideasAsList.add(idea);
+        localDataSource.writeIdeas(ideasAsList);
+        return Right(null);
+      }
     });
   }
 
@@ -63,4 +67,11 @@ class DevProjectsRepositoryDefaultImpl extends DevProjectsRepository {
     });
   }
 
+  bool _ideaByIdAlreadyExists(List<Idea> ideas, Idea idea){
+    for(Idea currentIdea in ideas){
+      if(currentIdea.id == idea.id) return true;
+    }
+
+    return false;
+  }
 }

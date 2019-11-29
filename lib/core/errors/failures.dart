@@ -7,3 +7,5 @@ abstract class Failure extends Equatable {
 class CacheFailure extends Failure {}
 
 class IdeaNotFoundFailure extends Failure {}
+
+class IdeaAlreadyExistsFailure extends Failure {}

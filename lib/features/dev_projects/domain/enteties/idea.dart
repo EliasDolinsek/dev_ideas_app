@@ -2,6 +2,8 @@ import 'package:dev_ideas/features/dev_projects/domain/enteties/dev_status.dart'
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+export 'dev_status.dart';
+
 class Idea extends Equatable {
 
   final String id;

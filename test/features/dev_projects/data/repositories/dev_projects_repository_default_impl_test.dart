@@ -141,5 +141,15 @@ void main() {
       verifyNever(localDataSource.writeIdeas(any));
       expect(result, Left(IdeaNotFoundFailure()));
     });
+
+    test("should only add a new idea if the id of the new idea isn't forgiven", () async {
+      when(localDataSource.getAllIdeas()).thenAnswer((_) => Future.value(ideasList));
+
+      final result = await repositoryDefaultImpl.addIdea(tIdeaFirst);
+
+      expect(result, Left(IdeaAlreadyExistsFailure()));
+      verifyNever(localDataSource.writeIdeas(any));
+      verify(localDataSource.getAllIdeas());
+    });
   });
 }
