@@ -6,19 +6,18 @@ import 'package:dev_ideas/features/dev_projects/domain/usecases/remove_idea.dart
 import 'package:dev_ideas/features/dev_projects/domain/usecases/update_idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/get_all_ideas.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/get_idea_by_filter.dart';
-import 'package:dev_ideas/features/dev_projects/domain/usecases/get_specific_idea.dart';
 import './bloc.dart';
 import 'package:meta/meta.dart';
 
 class DevProjectsBloc extends Bloc<DevProjectsEvent, DevProjectsState> {
   final GetAllIdeas getAllIdeas;
-  final GetSpecificIdea getSpecificIdea;
   final GetIdeasByFilter getIdeasByFilter;
+  final AddIdea addIdea;
 
   DevProjectsBloc(
       {@required this.getAllIdeas,
-      @required this.getSpecificIdea,
-      @required this.getIdeasByFilter});
+      @required this.getIdeasByFilter,
+      @required this.addIdea});
 
   @override
   DevProjectsState get initialState => EmptyDevProjectsBlocState();
@@ -49,6 +48,13 @@ class DevProjectsBloc extends Bloc<DevProjectsEvent, DevProjectsState> {
             category: event.category,
             devStatus: event.devStatus,
             ideas: ideasFilteredList);
+      });
+    } else if (event is AddIdeaEvent) {
+      final result = await addIdea(AddIdeaParams(idea: event.idea));
+      yield* result.fold((failure) async* {
+        yield ErrorDevProjectsState(error: "TODO"); //TODO implement errors
+      }, (_) async* {
+        dispatch(LoadDevProjectsEvent());
       });
     }
   }

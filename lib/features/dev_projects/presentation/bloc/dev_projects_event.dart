@@ -20,8 +20,30 @@ class LoadDevProjectsWithFilterEvent extends DevProjectsEvent {
       @required this.devStatus});
 }
 
-class LoadSpecificDevProject extends DevProjectsEvent {
+class LoadSpecificDevProjectEvent extends DevProjectsEvent {
   final String ideaID;
 
-  LoadSpecificDevProject({@required this.ideaID});
+  LoadSpecificDevProjectEvent({@required this.ideaID});
+}
+
+class AddIdeaEvent extends DevProjectsEvent {
+
+  final Idea idea;
+
+  AddIdeaEvent({@required this.idea});
+}
+
+class RemoveIdeaEvent extends DevProjectsEvent {
+
+  final String ideaID;
+
+  RemoveIdeaEvent({@required this.ideaID});
+}
+
+class UpdateIdeaEvent extends DevProjectsEvent {
+
+  final String ideaID;
+  final Idea idea;
+
+  UpdateIdeaEvent({@required this.ideaID, @required this.idea});
 }

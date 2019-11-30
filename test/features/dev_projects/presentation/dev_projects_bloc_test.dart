@@ -1,11 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:dev_ideas/core/errors/failures.dart';
-import 'package:dev_ideas/core/usecases/usecase.dart';
 import 'package:dev_ideas/features/dev_projects/domain/enteties/idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/add_idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/get_all_ideas.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/get_idea_by_filter.dart';
-import 'package:dev_ideas/features/dev_projects/domain/usecases/get_specific_idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/remove_idea.dart';
 import 'package:dev_ideas/features/dev_projects/domain/usecases/update_idea.dart';
 import 'package:dev_ideas/features/dev_projects/presentation/bloc/bloc.dart';
@@ -17,7 +15,7 @@ class MockGetAllIdeas extends Mock implements GetAllIdeas {}
 
 class MockGetIdeasByFilter extends Mock implements GetIdeasByFilter {}
 
-class MockGetSpecificIdea extends Mock implements GetSpecificIdea {}
+class MockAddIdea extends Mock implements AddIdea {}
 
 class MockRemoveIdea extends Mock implements RemoveIdea {}
 
@@ -28,7 +26,7 @@ void main() {
 
   MockGetAllIdeas getAllIdeas;
   MockGetIdeasByFilter getIdeasByFilter;
-  MockGetSpecificIdea getSpecificIdea;
+  MockAddIdea addIdea;
 
   final tIdeaFirst = Idea(
       id: "123",
@@ -66,12 +64,12 @@ void main() {
   setUp(() {
     getAllIdeas = MockGetAllIdeas();
     getIdeasByFilter = MockGetIdeasByFilter();
-    getSpecificIdea = MockGetSpecificIdea();
+    addIdea = MockAddIdea();
 
     bloc = DevProjectsBloc(
         getAllIdeas: getAllIdeas,
-        getSpecificIdea: getSpecificIdea,
-        getIdeasByFilter: getIdeasByFilter);
+        getIdeasByFilter: getIdeasByFilter,
+        addIdea: addIdea);
   });
 
   test("inital state should be InitialDevProjectsBlocState", () async {
@@ -97,21 +95,21 @@ void main() {
 
     test(
         "should displach ErrorDevProjectsState when ann error in the usecase occors",
-            () async {
-          when(getAllIdeas(any))
-              .thenAnswer((_) => Future.value(Left(CacheFailure())));
+        () async {
+      when(getAllIdeas(any))
+          .thenAnswer((_) => Future.value(Left(CacheFailure())));
 
-          final expectedStates = [
-            EmptyDevProjectsBlocState(),
-            ErrorDevProjectsState(error: "TODO")
-          ]; //TODO implement error
-          expectLater(bloc.state, emitsInOrder(expectedStates));
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        ErrorDevProjectsState(error: "TODO")
+      ]; //TODO implement error
+      expectLater(bloc.state, emitsInOrder(expectedStates));
 
-          bloc.dispatch(LoadDevProjectsEvent());
+      bloc.dispatch(LoadDevProjectsEvent());
 
-          await untilCalled(getAllIdeas(any));
-          verify(getAllIdeas(any));
-        });
+      await untilCalled(getAllIdeas(any));
+      verify(getAllIdeas(any));
+    });
   });
 
   group("LoadDevProjectsWithFilterEvent", () {
@@ -120,30 +118,30 @@ void main() {
         tCategory = "",
         tDevStatus = DevStatus.IDEA;
     test("should dispach LoadedDevProjectsWithFilterState for a filter",
-            () async {
-          when(getIdeasByFilter(any))
-              .thenAnswer((_) => Future.value(Right(tIdeasList)));
+        () async {
+      when(getIdeasByFilter(any))
+          .thenAnswer((_) => Future.value(Right(tIdeasList)));
 
-          final expectedStates = [
-            EmptyDevProjectsBlocState(),
-            LoadedDevProjectsWithFilterState(
-                title: tTitle,
-                projectName: tProjectName,
-                category: tCategory,
-                devStatus: tDevStatus,
-                ideas: tIdeasList)
-          ];
-          expectLater(bloc.state, emitsInOrder(expectedStates));
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        LoadedDevProjectsWithFilterState(
+            title: tTitle,
+            projectName: tProjectName,
+            category: tCategory,
+            devStatus: tDevStatus,
+            ideas: tIdeasList)
+      ];
+      expectLater(bloc.state, emitsInOrder(expectedStates));
 
-          bloc.dispatch(LoadDevProjectsWithFilterEvent(
-              title: tTitle,
-              projectName: tProjectName,
-              category: tCategory,
-              devStatus: tDevStatus));
+      bloc.dispatch(LoadDevProjectsWithFilterEvent(
+          title: tTitle,
+          projectName: tProjectName,
+          category: tCategory,
+          devStatus: tDevStatus));
 
-          await untilCalled(getIdeasByFilter(any));
-          verify(getIdeasByFilter(any));
-        });
+      await untilCalled(getIdeasByFilter(any));
+      verify(getIdeasByFilter(any));
+    });
 
     test("should dispach ErrorDevProjectsState", () async {
       when(getIdeasByFilter(any))
@@ -164,6 +162,40 @@ void main() {
 
       await untilCalled(getIdeasByFilter(any));
       verify(getIdeasByFilter(any));
+    });
+  });
+
+  group("AddIdeaEvent", () {
+    test("should add an idea", () async {
+      when(addIdea(any)).thenAnswer((_) => Future.value(Right(null)));
+      when(getAllIdeas(any)).thenAnswer((_) => Future.value(Right(tIdeasList)));
+
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        LoadedDevProjectsState(ideas: tIdeasList)
+      ];
+
+      expectLater(bloc.state, emitsInOrder(expectedStates));
+
+      bloc.dispatch(AddIdeaEvent(idea: tIdeaFirst));
+
+      await untilCalled(addIdea(any));
+      verify(addIdea(AddIdeaParams(idea: tIdeaFirst)));
+    });
+    
+    test("shloud dispach an error if addding an idea fails", () async {
+      when(addIdea(any)).thenAnswer((_) => Future.value(Left(IdeaAlreadyExistsFailure())));
+
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        ErrorDevProjectsState(error: "TODO")
+      ]; //TODO implement error
+      
+      expectLater(bloc.state, emitsInOrder(expectedStates));
+      bloc.dispatch(AddIdeaEvent(idea: tIdeaFirst));
+
+      await untilCalled(addIdea(any));
+      verify(addIdea(AddIdeaParams(idea: tIdeaFirst)));
     });
   });
 }
