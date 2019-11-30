@@ -27,6 +27,8 @@ void main() {
   MockGetAllIdeas getAllIdeas;
   MockGetIdeasByFilter getIdeasByFilter;
   MockAddIdea addIdea;
+  MockRemoveIdea removeIdea;
+  MockUpdateIdea updateIdea;
 
   final tIdeaFirst = Idea(
       id: "123",
@@ -65,11 +67,15 @@ void main() {
     getAllIdeas = MockGetAllIdeas();
     getIdeasByFilter = MockGetIdeasByFilter();
     addIdea = MockAddIdea();
+    removeIdea = MockRemoveIdea();
+    updateIdea = MockUpdateIdea();
 
     bloc = DevProjectsBloc(
         getAllIdeas: getAllIdeas,
         getIdeasByFilter: getIdeasByFilter,
-        addIdea: addIdea);
+        addIdea: addIdea,
+        removeIdea: removeIdea,
+        updateIdea: updateIdea);
   });
 
   test("inital state should be InitialDevProjectsBlocState", () async {
@@ -182,20 +188,88 @@ void main() {
       await untilCalled(addIdea(any));
       verify(addIdea(AddIdeaParams(idea: tIdeaFirst)));
     });
-    
+
     test("shloud dispach an error if addding an idea fails", () async {
-      when(addIdea(any)).thenAnswer((_) => Future.value(Left(IdeaAlreadyExistsFailure())));
+      when(addIdea(any))
+          .thenAnswer((_) => Future.value(Left(IdeaAlreadyExistsFailure())));
 
       final expectedStates = [
         EmptyDevProjectsBlocState(),
         ErrorDevProjectsState(error: "TODO")
       ]; //TODO implement error
-      
+
       expectLater(bloc.state, emitsInOrder(expectedStates));
       bloc.dispatch(AddIdeaEvent(idea: tIdeaFirst));
 
       await untilCalled(addIdea(any));
       verify(addIdea(AddIdeaParams(idea: tIdeaFirst)));
+    });
+  });
+
+  group("RemoveIdeaEvent", () {
+    test("should remove an idea", () async {
+      when(removeIdea(any)).thenAnswer((_) => Future.value(Right(null)));
+      when(getAllIdeas(any)).thenAnswer((_) => Future.value(Right(tIdeasList)));
+
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        LoadedDevProjectsState(ideas: tIdeasList)
+      ];
+
+      expectLater(bloc.state, emitsInOrder(expectedStates));
+      bloc.dispatch(RemoveIdeaEvent(ideaID: tIdeaFirst.id));
+
+      await untilCalled(removeIdea(any));
+      verify(removeIdea(RemoveIdeaParams(ideaID: tIdeaFirst.id)));
+    });
+
+    test("should dispatch an error if removing an idea fails", () async {
+      when(removeIdea(any))
+          .thenAnswer((_) => Future.value(Left(IdeaNotFoundFailure())));
+
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        ErrorDevProjectsState(error: "TODO")
+      ]; //TODO implement errors
+
+      expectLater(bloc.state, emitsInOrder(expectedStates));
+      bloc.dispatch(RemoveIdeaEvent(ideaID: tIdeaFirst.id));
+
+      await untilCalled(removeIdea(any));
+      verify(removeIdea(RemoveIdeaParams(ideaID: tIdeaFirst.id)));
+    });
+  });
+
+  group("UpdateIdeaEvent", () {
+    test("should update an event", () async {
+      when(updateIdea(any)).thenAnswer((_) => Future.value(Right(null)));
+      when(getAllIdeas(any)).thenAnswer((_) => Future.value(Right(tIdeasList)));
+
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        LoadedDevProjectsState(ideas: tIdeasList)
+      ];
+
+      expectLater(bloc.state, emitsInOrder(expectedStates));
+      bloc.dispatch(UpdateIdeaEvent(ideaID: tIdeaFirst.id, idea: tIdeaSecond));
+
+      await untilCalled(updateIdea(
+          UpdateIdeaParams(ideaID: tIdeaFirst.id, update: tIdeaSecond)));
+      verify(updateIdea(
+          UpdateIdeaParams(ideaID: tIdeaFirst.id, update: tIdeaSecond)));
+    });
+
+    test("should dispatch an error if updating an idea fails", () async {
+      when(updateIdea(any))
+          .thenAnswer((_) => Future.value(Left(IdeaNotFoundFailure())));
+
+      final expectedStates = [
+        EmptyDevProjectsBlocState(),
+        ErrorDevProjectsState(error: "TODO")
+      ]; //TODO implement errors
+
+      expectLater(bloc.state, emitsInOrder(expectedStates));
+      bloc.dispatch(UpdateIdeaEvent(ideaID: tIdeaFirst.id, idea: tIdeaSecond));
     });
   });
 }
