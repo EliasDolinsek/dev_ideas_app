@@ -31,9 +31,11 @@ dependencies:
   # Functional programming thingies
   dartz: ^0.8.6
   # ID generation
-
   uuid: ^2.0.4
+  # Paths
   path_provider: ^1.4.2
+  #Dependency injection
+  get_it: ^3.0.3
   
 dev_dependencies:
   flutter_test:
