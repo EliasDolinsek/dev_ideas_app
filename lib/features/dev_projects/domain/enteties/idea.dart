@@ -1,11 +1,11 @@
 import 'package:dev_ideas/features/dev_projects/domain/enteties/dev_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 export 'dev_status.dart';
 
 class Idea extends Equatable {
-
   final String id;
   final String title, projectName, description, category;
   final List<String> photoURLs;
@@ -28,4 +28,20 @@ class Idea extends Equatable {
         assert(status != null),
         super(
             [id, title, projectName, description, photoURLs, category, status]);
+
+  factory Idea.withRandomID(
+          {@required String title,
+          @required String projectName,
+          @required String description,
+          @required List<String> photoURLs,
+          @required String category,
+          @required DevStatus status}) =>
+      Idea(
+          id: Uuid().v4(),
+          title: title,
+          projectName: projectName,
+          description: description,
+          photoURLs: photoURLs,
+          category: category,
+          status: status);
 }

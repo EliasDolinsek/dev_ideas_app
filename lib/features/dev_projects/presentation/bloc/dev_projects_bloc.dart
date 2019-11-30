@@ -1,0 +1,55 @@
+import 'dart:async';
+import 'package:bloc/bloc.dart';
+import 'package:dev_ideas/core/usecases/usecase.dart';
+import 'package:dev_ideas/features/dev_projects/domain/usecases/add_idea.dart';
+import 'package:dev_ideas/features/dev_projects/domain/usecases/remove_idea.dart';
+import 'package:dev_ideas/features/dev_projects/domain/usecases/update_idea.dart';
+import 'package:dev_ideas/features/dev_projects/domain/usecases/get_all_ideas.dart';
+import 'package:dev_ideas/features/dev_projects/domain/usecases/get_idea_by_filter.dart';
+import 'package:dev_ideas/features/dev_projects/domain/usecases/get_specific_idea.dart';
+import './bloc.dart';
+import 'package:meta/meta.dart';
+
+class DevProjectsBloc extends Bloc<DevProjectsEvent, DevProjectsState> {
+  final GetAllIdeas getAllIdeas;
+  final GetSpecificIdea getSpecificIdea;
+  final GetIdeasByFilter getIdeasByFilter;
+
+  DevProjectsBloc(
+      {@required this.getAllIdeas,
+      @required this.getSpecificIdea,
+      @required this.getIdeasByFilter});
+
+  @override
+  DevProjectsState get initialState => EmptyDevProjectsBlocState();
+
+  @override
+  Stream<DevProjectsState> mapEventToState(
+    DevProjectsEvent event,
+  ) async* {
+    if (event is LoadDevProjectsEvent) {
+      final result = await getAllIdeas(NoParams());
+      yield* result.fold((failure) async* {
+        yield ErrorDevProjectsState(error: "TODO"); //TODO implement errors
+      }, (ideasList) async* {
+        yield LoadedDevProjectsState(ideas: ideasList);
+      });
+    } else if (event is LoadDevProjectsWithFilterEvent) {
+      final result = await getIdeasByFilter(GetIdeasByFilterParams(
+          title: event.title,
+          category: event.category,
+          devStatus: event.devStatus));
+
+      yield* result.fold((failure) async* {
+        yield ErrorDevProjectsState(error: "TODO"); //TODO implement errors
+      }, (ideasFilteredList) async* {
+        yield LoadedDevProjectsWithFilterState(
+            title: event.title,
+            projectName: event.projectName,
+            category: event.category,
+            devStatus: event.devStatus,
+            ideas: ideasFilteredList);
+      });
+    }
+  }
+}

@@ -1,3 +1,3 @@
-export 'dev_projects_bloc_bloc.dart';
-export 'dev_projects_bloc_event.dart';
-export 'dev_projects_bloc_state.dart';
+export 'dev_projects_bloc.dart';
+export 'dev_projects_event.dart';
+export 'dev_projects_state.dart';
