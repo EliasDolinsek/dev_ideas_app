@@ -4,23 +4,23 @@ import 'package:path_provider/path_provider.dart';
 
 abstract class DataManager {
 
-  Future<void> writeContent(String content, String destination);
-  Future<String> readContent(String source);
+  Future<void> writeContent(String content, File destination);
+  Future<String> readContent(File source);
 
   Future<String> get getLocalPath async => (await getApplicationDocumentsDirectory()).path;
 }
 
 class LocalDataManager extends DataManager{
   @override
-  Future<String> readContent(String file) async {
-    final fileToRead = File(file);
-    return fileToRead.readAsString();
+  Future<String> readContent(File file) async {
+    if(!file.existsSync()) file.createSync();
+    return file.readAsString();
   }
 
   @override
-  Future<void> writeContent(String content, String file) async {
-    final fileToWrite = File(file);
-    return fileToWrite.writeAsString(content);
+  Future<void> writeContent(String content, File file) async {
+    if(!file.existsSync()) file.createSync();
+    return file.writeAsString(content);
   }
 
 }

@@ -8,7 +8,6 @@ import 'package:mockito/mockito.dart';
 import 'package:matcher/matcher.dart';
 import 'package:collection/collection.dart';
 
-import '../../../../../lib/core/config/config.dart' as config;
 import '../../../../fixtures/fixutres_reader.dart';
 
 class MockDataManager extends Mock implements DataManager {}
@@ -85,7 +84,15 @@ void main(){
       localDataSource.writeIdeas(ideasList);
 
       final ideasAsList = IdeaModel.ideaModelsToJSON(ideasList);
-      verify(dataManager.writeContent(ideasAsList.toString(), config.DATA_FILE_NAME));
+      verify(dataManager.writeContent(ideasAsList.toString(), await localDataSource.localDataFile));
+    });
+
+    test("should return a empty list when the gotten content is empty", () async {
+      when(dataManager.readContent(any)).thenAnswer((_) => Future.value(""));
+
+      final result = await localDataSource.getAllIdeas();
+
+      expect(result, <IdeaModel>[]);
     });
   });
 }

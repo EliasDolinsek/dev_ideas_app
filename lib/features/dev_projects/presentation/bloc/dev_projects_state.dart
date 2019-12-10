@@ -36,9 +36,3 @@ class LoadedDevProjectsWithFilterState extends DevProjectsState {
       @required this.ideas})
       : super([title, projectName, category, devStatus, ideas]);
 }
-
-class LoadedSpecificDevProject extends DevProjectsState {
-  final Idea idea;
-
-  LoadedSpecificDevProject(this.idea);
-}

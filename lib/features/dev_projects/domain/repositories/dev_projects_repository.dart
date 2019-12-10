@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:dev_ideas/core/errors/failures.dart';
-import 'package:dev_ideas/features/dev_projects/domain/enteties/dev_status.dart';
 import 'package:dev_ideas/features/dev_projects/domain/enteties/idea.dart';
 import 'package:equatable/equatable.dart';
 

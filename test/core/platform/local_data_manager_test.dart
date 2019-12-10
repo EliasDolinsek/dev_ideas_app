@@ -32,7 +32,7 @@ void main(){
     final file = File("test/fixtures/random_text_fixture.txt");
     final contentInFile = file.readAsStringSync();
 
-    final result = await localDataManager.readContent(file.path);
+    final result = await localDataManager.readContent(file);
 
     expect(result, contentInFile);
   });
@@ -41,9 +41,29 @@ void main(){
     final file = File("test/fixtures/random_text_fixture.txt");
     final content = DateTime.now().millisecondsSinceEpoch.toString();
 
-    await localDataManager.writeContent(content, file.path);
+    await localDataManager.writeContent(content, file);
 
     final contentInFile = file.readAsStringSync();
     expect(contentInFile, equals(content));
+  });
+
+  test("should create a new file if the file doesn't exist when writing", () async {
+    final file = MockFile();
+    when(file.path).thenReturn("alskdjglkawejglkawjlkajdgkla");
+    when(file.existsSync()).thenReturn(false);
+
+    await localDataManager.writeContent("", file);
+
+    verify(file.createSync());
+  });
+
+  test("should create a new file if the file doesn't exist when reading", () async {
+    final file = MockFile();
+    when(file.path).thenReturn("alskdjglkawejglkawegjlkajdgkla");
+    when(file.existsSync()).thenReturn(false);
+
+    await localDataManager.readContent(file);
+
+    verify(file.createSync());
   });
 }

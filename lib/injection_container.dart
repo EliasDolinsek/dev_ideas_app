@@ -37,7 +37,7 @@ void init() {
   sl.registerLazySingleton<DevProjectsLocalDataSource>(() => DevProjectsLocalDataSourceDefaultImpl(sl()));
 
   //! Core
-  sl.registerLazySingleton(() => LocalDataManager());
+  sl.registerLazySingleton<DataManager>(() => LocalDataManager());
   
   //! External
 }
