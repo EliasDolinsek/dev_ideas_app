@@ -24,52 +24,70 @@ class DevProjectsRepositoryDefaultImpl extends DevProjectsRepository {
   Future<Either<Failure, void>> addIdea(Idea idea) async {
     final ideas = await getAllIdeas();
     return ideas.fold((failure) => Left(failure), (ideasAsList) async {
-      if(_ideaByIdAlreadyExists(ideasAsList, idea)){
-        return Left(IdeaAlreadyExistsFailure());
-      } else {
-        final ideaToAdd = IdeaModel.fromIdea(idea);
-        ideasAsList.add(ideaToAdd);
-        await localDataSource.writeIdeas(ideasAsList);
-        return Right(null);
-      }
+      return _addIdea(idea, ideasAsList);
     });
+  }
+
+  Future<Either<Failure, void>> _addIdea(Idea idea, List<Idea> ideas) async {
+    if(_ideaByIdAlreadyExists(ideas, idea)){
+      final failure = IdeaAlreadyExistsFailure();
+      return Left(failure);
+    } else {
+      final ideaModelToAdd = IdeaModel.fromIdea(idea);
+      ideas.add(ideaModelToAdd);
+
+      await localDataSource.writeIdeas(ideas);
+      return Right(null);
+    }
   }
 
   @override
   Future<Either<Failure, void>> removeIdea(String ideaID) async {
     final ideas = await getAllIdeas();
     return ideas.fold((failure) => Left(failure), (ideasAsList) {
-      final ideaToRemove = ideasAsList.firstWhere((idea) => idea.id == ideaID,
-          orElse: () => null);
-      if (ideaToRemove == null) {
-        return Left(IdeaNotFoundFailure());
-      } else {
-        ideasAsList.remove(ideaToRemove);
-        localDataSource.writeIdeas(ideasAsList);
-        return Right(null);
-      }
+      return _removeIdea(ideaID, ideasAsList);
     });
+  }
+
+  Future<Either<Failure, void>> _removeIdea(String ideaID, List<Idea> ideas) async {
+    final ideaToRemove = ideas.firstWhere((idea) => idea.id == ideaID,
+        orElse: () => null);
+
+    if (ideaToRemove == null) {
+      final failure = IdeaNotFoundFailure();
+      return Left(failure);
+    } else {
+      ideas.remove(ideaToRemove);
+
+      localDataSource.writeIdeas(ideas);
+      return Right(null);
+    }
   }
 
   @override
   Future<Either<Failure, void>> updateIdea(String ideaID, Idea update) async {
     final ideas = await getAllIdeas();
     return ideas.fold((failure) => Left(failure), (ideasAsList) async {
-      final ideaToReplace = ideasAsList.firstWhere((idea) => idea.id == ideaID,
-          orElse: () => null);
-      if (ideaToReplace == null) {
-        return Left(IdeaNotFoundFailure());
-      } else {
-        final indexOfReplacement = ideasAsList.indexOf(ideaToReplace);
-
-        ideasAsList.removeAt(indexOfReplacement);
-        ideasAsList.insert(indexOfReplacement, update);
-
-        await localDataSource.writeIdeas(ideasAsList);
-
-        return Right(null);
-      }
+      return _updateIdea(ideaID, update, ideasAsList);
     });
+  }
+
+  Future<Either<Failure, void>> _updateIdea(String ideaID, Idea update, List<Idea> ideas) async {
+    final ideaToReplace = ideas.firstWhere((idea) => idea.id == ideaID,
+        orElse: () => null);
+
+    if (ideaToReplace == null) {
+      final failure = IdeaNotFoundFailure();
+      return Left(failure);
+    } else {
+      final indexOfReplacement = ideas.indexOf(ideaToReplace);
+
+      ideas.removeAt(indexOfReplacement);
+      ideas.insert(indexOfReplacement, update);
+
+      await localDataSource.writeIdeas(ideas);
+      return Right(null);
+    }
   }
 
   bool _ideaByIdAlreadyExists(List<Idea> ideas, Idea idea) {

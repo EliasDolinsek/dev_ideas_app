@@ -16,6 +16,8 @@ abstract class DevProjectsLocalDataSource {
 
 class DevProjectsLocalDataSourceDefaultImpl extends DevProjectsLocalDataSource {
 
+  static const String DATA_LOADING_ERROR_MESSAGE = "Error when loading data from file";
+
   final DataManager dataManager;
 
   DevProjectsLocalDataSourceDefaultImpl(this.dataManager);
@@ -31,7 +33,7 @@ class DevProjectsLocalDataSourceDefaultImpl extends DevProjectsLocalDataSource {
         return IdeaModel.ideaModelsFromJSON(jsonMap);
       }
     } on Exception {
-      throw new CacheException(message: "Error when loading data from file");
+      throw new CacheException(message: DATA_LOADING_ERROR_MESSAGE);
     }
   }
 
