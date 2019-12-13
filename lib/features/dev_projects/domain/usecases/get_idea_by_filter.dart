@@ -35,16 +35,6 @@ class GetIdeasByFilter extends Usecase<List<Idea>, GetIdeasByFilterParams> {
      filteredIdeas.addAll(_filterIdeasByTitle(usableIdeas, filter.title));
     }
 
-    if (filter.projectName != null) {
-      filteredIdeas
-          .addAll(_filterIdeasByProjectName(usableIdeas, filter.projectName));
-    }
-
-    if (filter.category != null) {
-      filteredIdeas
-          .addAll(_filterIdeasByCategory(usableIdeas, filter.category));
-    }
-
     return filteredIdeas.toList().cast<Idea>();
   }
 
@@ -53,16 +43,6 @@ class GetIdeasByFilter extends Usecase<List<Idea>, GetIdeasByFilterParams> {
 
   List<Idea> _filterIdeasByTitle(List<Idea> ideas, String title) {
     return ideas.where((idea) => idea.title.contains(title)).toList();
-  }
-
-  List<Idea> _filterIdeasByProjectName(List<Idea> ideas, String projectName) {
-    return ideas
-        .where((idea) => idea.projectName.contains(projectName))
-        .toList();
-  }
-
-  List<Idea> _filterIdeasByCategory(List<Idea> ideas, String category) {
-    return ideas.where((idea) => idea.category.contains(category)).toList();
   }
 }
 

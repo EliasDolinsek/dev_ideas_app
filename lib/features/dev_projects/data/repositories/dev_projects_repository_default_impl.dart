@@ -54,7 +54,7 @@ class DevProjectsRepositoryDefaultImpl extends DevProjectsRepository {
   @override
   Future<Either<Failure, void>> updateIdea(String ideaID, Idea update) async {
     final ideas = await getAllIdeas();
-    return ideas.fold((failure) => Left(failure), (ideasAsList) {
+    return ideas.fold((failure) => Left(failure), (ideasAsList) async {
       final ideaToReplace = ideasAsList.firstWhere((idea) => idea.id == ideaID,
           orElse: () => null);
       if (ideaToReplace == null) {
@@ -64,6 +64,8 @@ class DevProjectsRepositoryDefaultImpl extends DevProjectsRepository {
 
         ideasAsList.removeAt(indexOfReplacement);
         ideasAsList.insert(indexOfReplacement, update);
+
+        await localDataSource.writeIdeas(ideasAsList);
 
         return Right(null);
       }

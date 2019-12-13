@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dev_ideas/injection_container.dart';
 
+import 'idea_details_view.dart';
+
 class HomeLayout extends StatelessWidget {
   const HomeLayout();
 
@@ -12,16 +14,7 @@ class HomeLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          sl<DevProjectsBloc>().dispatch(AddIdeaEvent(
-              idea: Idea.withRandomID(
-                  title: "Test",
-                  projectName: "Test",
-                  description: "Test",
-                  photoURLs: [],
-                  category: "Category",
-                  status: DevStatus.IDEA)));
-        },
+        onPressed: () => _onCreateClicked(context),
         child: Icon(Icons.add),
       ),
       body: StreamBuilder(
@@ -39,34 +32,67 @@ class HomeLayout extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(DevProjectsState state, BuildContext context){
-    if (state is EmptyDevProjectsBlocState){
+  Widget _buildContent(DevProjectsState state, BuildContext context) {
+    if (state is EmptyDevProjectsBlocState) {
       sl<DevProjectsBloc>().dispatch(LoadDevProjectsEvent());
       return _buildLoading();
-    } else if (state is DevProjectsLoadingState){
+    } else if (state is DevProjectsLoadingState) {
       return _buildLoading();
-    } else if (state is LoadedDevProjectsState){
-      return _buildIdeasList(state.ideas, context);
-    } else if (state is ErrorDevProjectsState){
+    } else if (state is LoadedDevProjectsState) {
+      return _buildLoadedWithoutFilters(state.ideas, context);
+    } else if (state is ErrorDevProjectsState) {
       return Center(child: DevIdeasErrorWidget());
-    } else if (state is LoadedDevProjectsWithFilterState){
-      return Text("LOADED WITH FILTERS");
+    } else if (state is LoadedDevProjectsWithFilterState) {
+      return _buildLoadedWithoutFilters(state.ideas, context);
     } else {
       return Center(child: DevIdeasErrorWidget());
     }
   }
 
-  Widget _buildIdeasList(List<Idea> ideas, BuildContext context) {
+  Widget _buildLoadedWithoutFilters(List<Idea> ideas, BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
-        final idea = ideas.elementAt(index);
-        return ListTile(
-          leading: _buildListTileIconForIdea(idea, context),
-          title: Text(idea.title),
-          subtitle: Text(idea.description),
-        );
+        if (index == 0) {
+          return _buildSearchBar();
+        } else {
+          final idea = ideas.elementAt(index - 1);
+          return _buildIdeaTile(idea, context);
+        }
       },
-      itemCount: ideas.length,
+      itemCount: ideas.length + 1,
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: "Search",
+          border: OutlineInputBorder(),
+        ),
+        onChanged: (search) {
+          if (search.isNotEmpty) {
+            final event = LoadDevProjectsWithFilterEvent(
+                title: search,
+                projectName: search,
+                category: search,
+                devStatus: null);
+            sl<DevProjectsBloc>().dispatch(event);
+          } else {
+            sl<DevProjectsBloc>().dispatch(LoadDevProjectsEvent());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildIdeaTile(Idea idea, BuildContext context) {
+    return ListTile(
+      leading: _buildListTileIconForIdea(idea, context),
+      title: Text(idea.title),
+      subtitle: idea.description.isEmpty ? null : Text(idea.description),
+      onTap: () => _onIdeaTileTapped(context, idea),
     );
   }
 
@@ -95,5 +121,15 @@ class HomeLayout extends StatelessWidget {
           color: Theme.of(context).primaryColor,
         );
     }
+  }
+
+  void _onCreateClicked(BuildContext context) {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => IdeaDetailsView.newIdea()));
+  }
+
+  void _onIdeaTileTapped(BuildContext context, Idea idea) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => IdeaDetailsView(idea)));
   }
 }
