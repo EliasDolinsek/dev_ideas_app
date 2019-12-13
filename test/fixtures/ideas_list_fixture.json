@@ -22,7 +22,7 @@
         "test.com",
         "test1.com"
       ],
-      "devStatus": 0
+      "devStatus": 1
     },
     {
       "id": "345",
@@ -34,7 +34,7 @@
         "test.com",
         "test1.com"
       ],
-      "devStatus": 0
+      "devStatus": 2
     }
   ]
 }

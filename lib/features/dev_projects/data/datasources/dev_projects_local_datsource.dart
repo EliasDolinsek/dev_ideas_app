@@ -11,7 +11,7 @@ abstract class DevProjectsLocalDataSource {
 
   Future<List<IdeaModel>> getAllIdeas();
 
-  Future<void> writeIdeas(List<Idea> ideas);
+  Future<void> writeIdeas(List<IdeaModel> ideas);
 }
 
 class DevProjectsLocalDataSourceDefaultImpl extends DevProjectsLocalDataSource {
@@ -25,7 +25,7 @@ class DevProjectsLocalDataSourceDefaultImpl extends DevProjectsLocalDataSource {
     try {
       final content = await dataManager.readContent(await localDataFile);
       if (content.isEmpty){
-        return [];
+        return <IdeaModel>[];
       } else {
         final jsonMap = json.decode(content);
         return IdeaModel.ideaModelsFromJSON(jsonMap);
@@ -36,9 +36,10 @@ class DevProjectsLocalDataSourceDefaultImpl extends DevProjectsLocalDataSource {
   }
 
   @override
-  Future<void> writeIdeas(List<Idea> ideas) async {
-    final String ideasAsString = IdeaModel.ideaModelsToJSON(ideas).toString();
-    dataManager.writeContent(ideasAsString, await localDataFile);
+  Future<void> writeIdeas(List<IdeaModel> ideas) async {
+    final ideasAsMap = IdeaModel.ideaModelsToMap(ideas);
+    final jsonContent = jsonEncode(ideasAsMap);
+    await dataManager.writeContent(jsonContent, await localDataFile);
     return null;
   }
 

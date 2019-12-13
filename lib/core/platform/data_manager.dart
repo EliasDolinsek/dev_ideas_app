@@ -14,13 +14,13 @@ class LocalDataManager extends DataManager{
   @override
   Future<String> readContent(File file) async {
     if(!file.existsSync()) file.createSync();
-    return file.readAsString();
+    return file.readAsStringSync();
   }
 
   @override
   Future<void> writeContent(String content, File file) async {
     if(!file.existsSync()) file.createSync();
-    return file.writeAsString(content);
+    return file.writeAsStringSync(content);
   }
 
 }

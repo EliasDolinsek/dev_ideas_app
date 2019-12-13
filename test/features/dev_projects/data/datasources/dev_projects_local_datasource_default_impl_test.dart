@@ -83,7 +83,7 @@ void main(){
     test("should write the new list of ideas", () async {
       localDataSource.writeIdeas(ideasList);
 
-      final ideasAsList = IdeaModel.ideaModelsToJSON(ideasList);
+      final ideasAsList = IdeaModel.ideaModelsToMap(ideasList);
       verify(dataManager.writeContent(ideasAsList.toString(), await localDataSource.localDataFile));
     });
 

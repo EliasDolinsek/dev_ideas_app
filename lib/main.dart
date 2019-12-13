@@ -43,7 +43,8 @@ class _NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("DevProjects")
+        title: Text("DevProjects", style: TextStyle(color: Colors.black),),
+        backgroundColor: Colors.white,
       ),
       body: items.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(

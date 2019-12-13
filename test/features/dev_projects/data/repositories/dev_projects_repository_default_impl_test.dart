@@ -152,4 +152,14 @@ void main() {
       verify(localDataSource.getAllIdeas());
     });
   });
+
+  test("should add an idea", () async {
+    when(localDataSource.getAllIdeas()).thenAnswer((_) => Future.value(ideasList));
+
+    final tIdea = Idea.withRandomID(title: "", projectName: "", description: "", photoURLs: [], category: "", status: DevStatus.IDEA);
+    final result = await repositoryDefaultImpl.addIdea(tIdea);
+
+    expect(result, Right(null));
+    verify(localDataSource.getAllIdeas());
+  });
 }

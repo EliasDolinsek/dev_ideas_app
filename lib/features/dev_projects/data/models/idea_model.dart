@@ -20,6 +20,18 @@ class IdeaModel extends Idea {
             category: category,
             status: status);
 
+  factory IdeaModel.fromIdea(Idea idea){
+    return IdeaModel(
+      id: idea.id,
+      title: idea.title,
+      projectName: idea.projectName,
+      description: idea.description,
+      photoURLs: idea.photoURLs,
+      category: idea.category,
+      status: idea.status
+    );
+  }
+
   factory IdeaModel.fromJSON(Map<String, dynamic> json) {
     return IdeaModel(
         id: json["id"],
@@ -48,7 +60,7 @@ class IdeaModel extends Idea {
     return ideasList.map((ideaJson) => IdeaModel.fromJSON(ideaJson)).toList();
   }
 
-  static Map<String, dynamic> ideaModelsToJSON(List<IdeaModel> models){
+  static Map<String, dynamic> ideaModelsToMap(List<IdeaModel> models){
     final Map<String, dynamic> map = {};
     List<Map<String, dynamic>> modelsAsList = models.map((m) => m.toJSON()).toList();
     map["ideas"] = modelsAsList;

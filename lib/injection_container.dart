@@ -16,7 +16,7 @@ final GetIt sl = GetIt.instance;
 void init() {
   //! Features - DevProjects
   //Bloc
-  sl.registerFactory(() => DevProjectsBloc(
+  sl.registerLazySingleton(() => DevProjectsBloc(
       getAllIdeas: sl(),
       getIdeasByFilter: sl(),
       addIdea: sl(),

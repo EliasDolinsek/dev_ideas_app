@@ -95,7 +95,7 @@ void main() {
   });
 
   test("should return a valid json map of a ideas list", () async {
-    final result = IdeaModel.ideaModelsToJSON(ideasList);
+    final result = IdeaModel.ideaModelsToMap(ideasList);
     expect(result, json.decode(fixturesReader.fixture("test/fixtures/ideas_list_fixture.json")));
   });
 }
