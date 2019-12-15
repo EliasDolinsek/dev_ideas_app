@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1048070098072",
+    "firebase_url": "https://dev-ideas.firebaseio.com",
+    "project_id": "dev-ideas",
+    "storage_bucket": "dev-ideas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048070098072:android:7da36500de4e8bf55154ed",
+        "android_client_info": {
+          "package_name": "com.dolinsek.elias.dev_ideas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048070098072-57q7vf0oec9i713c8l60b7c5trau142e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dolinsek.elias.dev_ideas",
+            "certificate_hash": "0ae3f61d3ae2bf88470e4512ee857d0b327b6450"
+          }
+        },
+        {
+          "client_id": "1048070098072-lako1nbho6vv9hcdt9rf9jnigh65gfgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPVkcNKP7lEUM4637Og9EwR9pDzkZdoqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048070098072-lako1nbho6vv9hcdt9rf9jnigh65gfgm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

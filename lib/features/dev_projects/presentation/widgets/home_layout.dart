@@ -39,28 +39,41 @@ class HomeLayout extends StatelessWidget {
     } else if (state is DevProjectsLoadingState) {
       return _buildLoading();
     } else if (state is LoadedDevProjectsState) {
-      return _buildLoadedWithoutFilters(state.ideas, context);
+      return _buildLoaded(state.ideas, context);
     } else if (state is ErrorDevProjectsState) {
       return Center(child: DevIdeasErrorWidget());
     } else if (state is LoadedDevProjectsWithFilterState) {
-      return _buildLoadedWithoutFilters(state.ideas, context);
+      return _buildLoaded(state.ideas, context);
     } else {
       return Center(child: DevIdeasErrorWidget());
     }
   }
 
-  Widget _buildLoadedWithoutFilters(List<Idea> ideas, BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          return _buildSearchBar();
-        } else {
-          final idea = ideas.elementAt(index - 1);
-          return _buildIdeaTile(idea, context);
-        }
-      },
-      itemCount: ideas.length + 1,
+  Widget _buildLoaded(List<Idea> ideas, BuildContext context) {
+    return Column(
+      children: <Widget>[
+        _buildSearchBar(),
+        _buildIdeasDisplay(ideas, context)
+      ],
     );
+  }
+
+  Widget _buildIdeasDisplay(List<Idea> ideas, BuildContext context){
+    if(ideas.isNotEmpty){
+      return ListView.builder(
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          final idea = ideas.elementAt(index);
+          return _buildIdeaTile(idea, context);
+        },
+        itemCount: ideas.length,
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Text("No ideas found"),
+      );
+    }
   }
 
   Widget _buildSearchBar() {
@@ -90,8 +103,18 @@ class HomeLayout extends StatelessWidget {
   Widget _buildIdeaTile(Idea idea, BuildContext context) {
     return ListTile(
       leading: _buildListTileIconForIdea(idea, context),
-      title: Text(idea.title),
-      subtitle: idea.description.isEmpty ? null : Text(idea.description),
+      title: Text(
+        idea.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: idea.description.isEmpty
+          ? null
+          : Text(
+              idea.description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
       onTap: () => _onIdeaTileTapped(context, idea),
     );
   }
@@ -125,11 +148,11 @@ class HomeLayout extends StatelessWidget {
 
   void _onCreateClicked(BuildContext context) {
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => IdeaDetailsView.newIdea()));
+        MaterialPageRoute(builder: (context) => IdeaDetailsPage.newIdea()));
   }
 
   void _onIdeaTileTapped(BuildContext context, Idea idea) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => IdeaDetailsView(idea)));
+        .push(MaterialPageRoute(builder: (context) => IdeaDetailsPage(idea)));
   }
 }

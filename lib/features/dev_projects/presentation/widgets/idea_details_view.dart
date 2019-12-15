@@ -4,27 +4,47 @@ import 'package:flutter/material.dart';
 
 import '../../../../injection_container.dart';
 
-class IdeaDetailsView extends StatefulWidget {
+class IdeaDetailsPage extends StatelessWidget {
   final Idea idea;
   final bool editMode;
 
-  IdeaDetailsView(this.idea, {this.editMode = true});
+  IdeaDetailsPage(this.idea, {this.editMode = true});
 
-  factory IdeaDetailsView.newIdea() {
+  factory IdeaDetailsPage.newIdea() {
     Idea idea = Idea.withRandomID(
         title: "New Idea",
         description: "",
         category: "",
         status: DevStatus.IDEA);
-    return IdeaDetailsView(idea, editMode: false);
+
+    return IdeaDetailsPage(idea, editMode: false);
   }
 
   @override
-  _IdeaDetailsViewState createState() => _IdeaDetailsViewState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(idea.title),
+      ),
+      body: IdeaDetailsLayout(
+        idea,
+        editMode: editMode,
+      ),
+    );
+  }
 }
 
-class _IdeaDetailsViewState extends State<IdeaDetailsView> {
+class IdeaDetailsLayout extends StatefulWidget {
+  final Idea idea;
+  final bool editMode;
 
+  IdeaDetailsLayout(this.idea, {this.editMode = true});
+
+  @override
+  _IdeaDetailsLayoutState createState() => _IdeaDetailsLayoutState();
+}
+
+class _IdeaDetailsLayoutState extends State<IdeaDetailsLayout> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
@@ -45,17 +65,12 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.delete), onPressed: () => _deleteIdea(context))
-        ],
-      ),
-      body: Column(
+    return SingleChildScrollView(
+      child: Column(
         children: <Widget>[
-          Expanded(child: _buildContent(context)),
-          _buildActionButton(context)
+          _buildContent(context),
+          _buildActionButton(context),
+          _buildDeleteButton(context),
         ],
       ),
     );
@@ -106,8 +121,7 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
     );
   }
 
-
-  Widget _buildIdeaChip(){
+  Widget _buildIdeaChip() {
     return ChoiceChip(
       avatar: CircleAvatar(
         child: Icon(Icons.lightbulb_outline),
@@ -124,7 +138,7 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
     );
   }
 
-  Widget _buildInDevChip(){
+  Widget _buildInDevChip() {
     return ChoiceChip(
       avatar: CircleAvatar(
         child: Icon(Icons.code),
@@ -141,7 +155,7 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
     );
   }
 
-  Widget _buildDoneChip(){
+  Widget _buildDoneChip() {
     return ChoiceChip(
       avatar: CircleAvatar(
         child: Icon(Icons.done),
@@ -169,7 +183,7 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
           border: OutlineInputBorder(),
           hintText: "Description",
         ),
-        onChanged: (text){
+        onChanged: (text) {
           description = text;
         },
       ),
@@ -178,7 +192,7 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
 
   Widget _buildActionButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(32.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: SizedBox(
         width: double.infinity,
         child: RaisedButton(
@@ -195,6 +209,45 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
 
   String get actionButtonText => widget.editMode ? "UPDATE" : "CREATE";
 
+  Widget _buildDeleteButton(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlineButton(
+          onPressed: () => _showDeletionConfirmationDialog(context),
+          child: Text(
+            "DELETE",
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeletionConfirmationDialog(BuildContext context) {
+    showDialog(context: context, builder: _buildDeletionConfirmationDialog);
+  }
+
+  Widget _buildDeletionConfirmationDialog(BuildContext context) {
+    return AlertDialog(
+        title: Text("Delete DevIdea"),
+        content: Text("Do you really want to delete this DevIdea permanently"),
+        actions: <Widget>[
+          MaterialButton(
+            child: Text("CANCEL"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          MaterialButton(
+            child: Text("DELETE"),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _deleteIdea(context);
+            },
+          )
+        ]);
+  }
+
   void _actionButtonPress(BuildContext context) {
     _update();
     if (widget.editMode) {
@@ -204,7 +257,7 @@ class _IdeaDetailsViewState extends State<IdeaDetailsView> {
     }
   }
 
-  void _update(){
+  void _update() {
     widget.idea.title = this.title;
     widget.idea.description = this.description;
     widget.idea.status = this.devStatus;
