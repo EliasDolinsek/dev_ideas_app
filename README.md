@@ -1,16 +1,16 @@
 # dev_ideas
 
-A new Flutter project.
+Project idea management for developers
 
-## Getting Started
+### Description
 
-This project is a starting point for a Flutter application.
+An app build with test-driven development and clean architecture in Flutter. Allows the user to add project ideas for development. All data is stored locally at the time. However, there will be an option to use Google Firebase for remote data storage as well as Authentication using Google or E-Mail. This will then allow the user to use the Web-Version which will also build using Flutter.
 
-A few resources to get you started if this is your first Flutter project:
+![image 1](https://i.ibb.co/YQJ0yxF/dev-ideas-01.png)
+![image 2](https://i.ibb.co/FwCF0yV/dev-ideas-02.png)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Features
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* Manage project ideas
+* See the current status of all development ideas
+* Search development ideas
